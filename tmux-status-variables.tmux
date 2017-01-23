@@ -1,9 +1,7 @@
 #!/bin/bash
-
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DEFAULT_SCRIPTS_DIR="$CURRENT_DIR/scripts"
-
-source "$CURRENT_DIR/scripts/tmux_utils.sh"
+source "$CURRENT_DIR/utils/tmux.sh"
 
 interpolate() {
    local file=$1
@@ -32,6 +30,6 @@ execute_scripts() {
    echo $output
 }
 
+set_tmux_option "@status_variables_dir" "$CURRENT_DIR"
 update_tmux_option execute_scripts "status-left"
 update_tmux_option execute_scripts "status-right"
-

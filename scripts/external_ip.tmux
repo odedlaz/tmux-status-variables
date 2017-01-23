@@ -1,9 +1,9 @@
 #!/bin/bash
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "$CURRENT_DIR/cache_utils.sh"
+CURRENT_DIR=$(tmux show-option -gqv "@status_variables_dir")
+source "$CURRENT_DIR/utils/sdk.sh"
 
-get_external_ip_address() {
+on_cache_miss() {
    echo "$(curl -s https://api.ipify.org)"
 }
 
-cached_value get_external_ip_address
+echo "$(get_cached_value on_cache_miss)"

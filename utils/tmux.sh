@@ -25,3 +25,8 @@ set_tmux_option() {
    local value=$2
    tmux set-option -gq "$option" "$value"
 }
+
+get_status_interval() {
+   echo $(get_tmux_option "status-interval" "")
+}
+

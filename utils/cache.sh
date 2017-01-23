@@ -1,6 +1,7 @@
 #!/bin/bash
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-source "$CURRENT_DIR/tmux_utils.sh"
+CURRENT_DIR=$(tmux show-option -gqv "@status_variables_dir")
+source "$CURRENT_DIR/utils/tmux.sh"
+source "$CURRENT_DIR/utils/misc.sh"
 
 TEMP_DIR=$(dirname $(mktemp -u))
 BASE_DIR="$TEMP_DIR/.tmux"
@@ -10,10 +11,6 @@ CACHE_FILENAME="$BASE_DIR/$(basename $0).cache"
 
 now() {
    echo "$(date +%s)"
-}
-
-get_status_interval() {
-   echo $(get_tmux_option "status-interval" "")
 }
 
 get_cache_timestamp () {
@@ -29,7 +26,7 @@ cache_value() {
    echo "$val" > $CACHE_FILENAME
 }
 
-cached_value() {
+get_cached_value() {
    fn="$1"
    timedelta="$(( $(now) - $(get_cache_timestamp) ))"
    if [ "$timedelta" -lt "$(get_status_interval)" ]; then
