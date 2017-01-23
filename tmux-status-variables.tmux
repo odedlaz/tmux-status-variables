@@ -3,7 +3,7 @@
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DEFAULT_SCRIPTS_DIR="$CURRENT_DIR/scripts"
 
-source "$CURRENT_DIR/tmux_helpers.sh"
+source "$CURRENT_DIR/scripts/tmux_utils.sh"
 
 interpolate() {
    local file=$1
