@@ -9,10 +9,6 @@ BASE_DIR="$TEMP_DIR/.tmux"
 CACHE_TS_FILENAME="$BASE_DIR/status_variables.ts"
 CACHE_FILENAME="$BASE_DIR/$(basename $0).cache"
 
-now() {
-   echo "$(date +%s)"
-}
-
 get_cache_timestamp () {
    if [ ! -f "$CACHE_TS_FILENAME" ]; then
       echo "0" > $CACHE_TS_FILENAME
@@ -21,20 +17,20 @@ get_cache_timestamp () {
 }
 
 cache_value() {
-   val="$1"
+   data="$1"
    echo "$(now)" > $CACHE_TS_FILENAME
-   echo "$val" > $CACHE_FILENAME
+   echo "$data" > $CACHE_FILENAME
 }
 
 get_cached_value() {
-   fn="$1"
+   on_cache_miss_fn="$1"
    timedelta="$(( $(now) - $(get_cache_timestamp) ))"
-   if [ "$timedelta" -lt "$(get_status_interval)" ]; then
+   if [ "$timedelta" -lt "$(get_status_interval)" ] && [ -f $CACHE_FILENAME ]; then
       cat $CACHE_FILENAME
       exit 0
    fi
 
-   return_value="$($fn)"
+   return_value="$($on_cache_miss_fn)"
    cache_value "$return_value"
    echo $return_value
 }
