@@ -15,14 +15,13 @@ Add the following to your `tmux.conf`, to show the amount of free memory:
 
 | Name              | Script           | Explanation                                                                        |
 |:------------------|:-----------------|:-----------------------------------------------------------------------------------|
-| ipinfo.io         | ipinfo           | Show public ip address info (using [ipinfo.io](https://ipinfo.io))                 |
+| ipinfo.io         | ipinfo           | Show public ip address info                                                        |
 | Free Memory       | free_mem         | Show how much free memory is available                                             |
 | Package Updates   | package_updates  | Show if there are any package updates (updates;security-updates)                   |
 | System Uptime     | uptime           | Show the uptime of the system                                                      |
 
 #### ipinfo.io
 
-Show public ip address info fetched from   
 Information is acquired using [ipinfo.io](https://ipinfo.io), and can be formatted as any combination of the fields [ipinfo.io](https://ipinfo.io) return.
 
 To control the format, set the *@ipinfo_format* variable to your liking.  
