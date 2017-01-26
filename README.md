@@ -24,8 +24,7 @@ Add the following to your `tmux.conf`, to show the amount of free memory:
 
 Information is acquired using [ipinfo.io](https://ipinfo.io), and can be formatted as any combination of the fields [ipinfo.io](https://ipinfo.io) return.
 
-To control the format, set the *@ipinfo_format* variable to your liking.  
-The following fields are supported:  
+To control the format, set the *@ipinfo_format* variable to your liking. The following fields are supported:  
 
 - #ip
 - #hostname
