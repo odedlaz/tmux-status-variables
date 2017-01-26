@@ -20,6 +20,29 @@ Add the following to your `tmux.conf`, to show the amount of free memory:
 | Package Updates   | package_updates  | Show if there are any package updates (updates;security-updates)                   |
 | System Uptime     | uptime           | Show the uptime of the system                                                      |
 
+#### ipinfo.io
+
+Show public ip address info fetched from   
+Information is acquired using [ipinfo.io](https://ipinfo.io), and can be formatted as any combination of the fields [ipinfo.io](https://ipinfo.io) return.
+
+To control the format, set the *@ipinfo_format* variable to your liking.  
+The following fields are supported:  
+
+- #ip
+- #hostname
+- #city
+- #region
+- #country 
+- #location
+- #isp
+- #asn
+
+For instance, if you want this format: "IP_ADDRESS (ISP_NAME)", run the following:  
+`tmux set-option -g @ipinfo_format "#ip (#isp)"`
+
+**!** This script requires [jq](https://stedolan.github.io/jq), a lightweight and flexible command-line JSON processor.
+
+
 ### Set Options
 
 Set the following options in your `.tmux.conf`.
