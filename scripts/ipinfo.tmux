@@ -33,10 +33,9 @@ on_cache_miss() {
    echo $ipinfo
 }
 
-# if jq exists, use advanced option
 if ! which jq &> /dev/null; then
    echo "jq is not installed"
    exit 1
 fi
-on_cache_miss
-# echo "$(get_cached_value on_cache_miss)"
+
+echo "$(get_cached_value on_cache_miss)"
