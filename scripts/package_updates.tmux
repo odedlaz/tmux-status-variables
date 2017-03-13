@@ -6,8 +6,8 @@ apt_on_cache_miss() {
 }
 
 dnf_on_cache_miss() {
-   all_updates="$(dnf -q updateinfo list | wc -l)"
-   security_updates="$(dnf -q updateinfo list security | wc -l)"
+   all_updates="$(dnf -q updateinfo list 2>/dev/null | wc -l)"
+   security_updates="$(dnf -q updateinfo list security 2> /dev/null | wc -l)"
 
    non_security_updates=$(($all_updates - $security_updates))
    printf "%s;%s\n" $non_security_updates $security_updates
