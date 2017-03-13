@@ -11,7 +11,7 @@ CACHE_FILENAME="$BASE_DIR/$(basename $0).cache"
 
 get_cache_timestamp () {
    if [ ! -f "$CACHE_TS_FILENAME" ]; then
-      echo "0" > $CACHE_TS_FILENAME
+      echo 0 > $CACHE_TS_FILENAME
    fi
    echo "$(cat $CACHE_TS_FILENAME)"
 }
@@ -24,10 +24,27 @@ cache_value() {
 
 get_cached_value() {
    on_cache_miss_fn="$1"
+   if [  -z "$on_cache_miss_fn" ]; then
+      echo "cache miss delegate has to be set"
+      return 1
+   fi
+
+   # grab the cache invalidation interval
+   # of the plugin who's asking for it
+   invalidate_interval=$(get_tmux_option \
+      "@$(basename $0 .tmux)_invalidate_cache_interval" \
+      "$(get_status_interval)")
+
    timedelta="$(( $(now) - $(get_cache_timestamp) ))"
-   if [ "$timedelta" -lt "$(get_status_interval)" ] && [ -f $CACHE_FILENAME ]; then
+
+   # create an empty cached file if non exists
+   if [ ! -f $CACHE_FILENAME ]; then
+      touch $CACHE_FILENAME
+   fi
+
+   if [ "$timedelta" -lt "$invalidate_interval" ]; then
       cat $CACHE_FILENAME
-      exit 0
+      return 0
    fi
 
    return_value="$($on_cache_miss_fn)"
