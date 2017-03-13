@@ -6,49 +6,64 @@ source "$CURRENT_DIR/utils/misc.sh"
 TEMP_DIR=$(dirname $(mktemp -u))
 BASE_DIR="$TEMP_DIR/.tmux"
 
-CACHE_TS_FILENAME="$BASE_DIR/status_variables.ts"
-CACHE_FILENAME="$BASE_DIR/$(basename $0).cache"
+get_cache_filename() {
+   echo "$BASE_DIR/${1}.cache"
+}
+
+get_cache_timestamp_filename() {
+   echo "$BASE_DIR/${1}.ts"
+}
 
 get_cache_timestamp () {
-   if [ ! -f "$CACHE_TS_FILENAME" ]; then
-      echo 0 > $CACHE_TS_FILENAME
+   filename="$(get_cache_timestamp_filename $1)"
+   if [ ! -f "$filename" ]; then
+      echo 0 > $filename
    fi
-   echo "$(cat $CACHE_TS_FILENAME)"
+   echo "$(cat $filename)"
 }
 
 cache_value() {
-   data="$1"
-   echo "$(now)" > $CACHE_TS_FILENAME
-   echo "$data" > $CACHE_FILENAME
+   echo "$(now)" > $(get_cache_timestamp_filename $1)
+   echo "$2" > $(get_cache_filename $1)
 }
 
 get_cached_value() {
+   plugin="$(basename $0 .tmux)"
+   log "cache" "getting value for '$plugin'"
+
    on_cache_miss_fn="$1"
    if [  -z "$on_cache_miss_fn" ]; then
-      echo "cache miss delegate has to be set"
+      log "cache" "cache miss delegate has to be set"
       return 1
    fi
 
    # grab the cache invalidation interval
    # of the plugin who's asking for it
    invalidate_interval=$(get_tmux_option \
-      "@$(basename $0 .tmux)_invalidate_cache_interval" \
+      "@${plugin}_invalidate_cache_interval" \
       "$(get_status_interval)")
+   log "cache" "'$plugin' value invalidates every $invalidate_interval secs"
 
-   timedelta="$(( $(now) - $(get_cache_timestamp) ))"
+   timedelta="$(( $(now) - $(get_cache_timestamp ${plugin}) ))"
+   log "cache" "'$plugin' was last updated $timedelta secs ago"
 
    # create an empty cached file if non exists
-   if [ ! -f $CACHE_FILENAME ]; then
-      touch $CACHE_FILENAME
+   cache_filename=$(get_cache_filename $plugin)
+   if [ ! -f "$cache_filename" ]; then
+      touch "$cache_filename"
    fi
 
    if [ "$timedelta" -lt "$invalidate_interval" ]; then
-      cat $CACHE_FILENAME
+      left=$(($invalidate_interval - $timedelta))
+      log "cache" "'$plugin' cache is still valid for the next $left secs"
+      cat $cache_filename
       return 0
    fi
 
+   log "cache" "'$plugin' cache item invalidated"
    return_value="$($on_cache_miss_fn)"
-   cache_value "$return_value"
+   cache_value "$plugin" "$return_value"
+   log "cache" "'$plugin' return value cached"
    echo $return_value
 }
 

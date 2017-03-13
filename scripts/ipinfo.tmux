@@ -15,9 +15,11 @@ get_asn() {
 }
 
 on_cache_miss() {
+   log "ipinfo" "getting fresh data from ipinfo.io"
    data="$(curl -s ipinfo.io/json)"
-   ipinfo=$ipinfo_format
+   log "ipinfo" "$data"
 
+   ipinfo=$ipinfo_format
    for field in ${fields[@]}; do
       get_field_fn="get_$field"
 
@@ -34,7 +36,7 @@ on_cache_miss() {
 }
 
 if ! which jq &> /dev/null; then
-   echo "jq is not installed"
+   log "ipinfo" "jq is not installed"
    exit 1
 fi
 
