@@ -18,7 +18,7 @@ log() {
    logger=$1
    message=$2
 
-   if [ -z $2 ]; then
+   if [ -z "$2" ]; then
       message=$1
       logger=""
    fi
